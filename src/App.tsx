@@ -29,6 +29,7 @@ import {
   handleFirestoreError,
   OperationType,
   ADMIN_EMAIL,
+  isAdminEmail,
 } from './firebase';
 import {
   collection,
@@ -147,7 +148,7 @@ export default function App() {
 
   // Check if current authenticated user has verified administrator role
   const activeUserEmail = (userProfile?.email || currentUser?.email || '').trim().toLowerCase();
-  const isOfficialAdmin = activeUserEmail === ADMIN_EMAIL.toLowerCase() || userProfile?.role === 'admin';
+  const isOfficialAdmin = isAdminEmail(activeUserEmail) || userProfile?.role === 'admin';
 
   // Effective role: Administrator for verified admins, otherwise strictly participant
   const effectiveRole: UserRole = isOfficialAdmin ? (userProfile?.role || 'admin') : 'participant';
@@ -159,11 +160,11 @@ export default function App() {
       setCurrentUser(user);
       if (user) {
         const userEmail = (user.email || '').toLowerCase();
-        const isOfficialAdmin = userEmail === ADMIN_EMAIL.toLowerCase();
+        const userIsAdmin = isAdminEmail(userEmail);
 
         setUserProfile(prev => {
           if (prev && prev.uid === user.uid) return prev;
-          const role: UserRole = isOfficialAdmin ? 'admin' : prev?.role || 'participant';
+          const role: UserRole = userIsAdmin ? 'admin' : prev?.role || 'participant';
           const updated: AppUser = {
             uid: user.uid,
             email: userEmail,
@@ -223,12 +224,12 @@ export default function App() {
             .then(() => setIsCloudSyncing(false))
             .catch(err => {
               setIsCloudSyncing(false);
-              console.warn('Initial seeding Firestore notice:', err);
+              handleFirestoreError(err, OperationType.WRITE, path);
             });
         }
       },
       error => {
-        console.warn('Firestore snapshot error:', error.message);
+        handleFirestoreError(error, OperationType.GET, path);
       }
     );
 
@@ -282,7 +283,7 @@ export default function App() {
         }
       },
       error => {
-        console.warn('Firestore saved sessions snapshot error:', error.message);
+        handleFirestoreError(error, OperationType.GET, path);
       }
     );
 
@@ -325,7 +326,7 @@ export default function App() {
     try {
       await setDoc(doc(db, 'saved_match_sessions', sessionId), newSession);
     } catch (e) {
-      console.warn('Firestore write saved session warning:', e);
+      handleFirestoreError(e, OperationType.WRITE, 'saved_match_sessions');
     }
 
     showToast('Keputusan berjaya disimpan dalam arkib aplikasi sebagai Draf (hanya boleh dilihat oleh Admin).');
@@ -359,7 +360,7 @@ export default function App() {
         { merge: true }
       );
     } catch (e) {
-      console.warn('Firestore update publish status warning:', e);
+      handleFirestoreError(e, OperationType.WRITE, 'saved_match_sessions');
     }
 
     showToast(
@@ -391,7 +392,7 @@ export default function App() {
     try {
       await deleteDoc(doc(db, 'saved_match_sessions', sessionId));
     } catch (e) {
-      console.warn('Firestore delete session warning:', e);
+      handleFirestoreError(e, OperationType.DELETE, 'saved_match_sessions');
     }
     showToast('Rekod sesi telah dipadamkan daripada arkib.');
   };
@@ -444,14 +445,16 @@ export default function App() {
   const femaleCount = participants.filter(p => p.gender === 'Female').length;
   const isEligible = maleCount >= 1 && femaleCount >= 1;
 
-  // Toggle user role preview (Strictly allowed for irfanhaikal03@gmail.com only)
+  // Toggle user role preview (Strictly allowed for verified administrators only)
   const handleToggleRole = isOfficialAdmin
     ? () => {
         const newRole: UserRole = effectiveRole === 'admin' ? 'participant' : 'admin';
+        const currentEmail = activeUserEmail || ADMIN_EMAIL;
+        const currentName = userProfile?.displayName || currentUser?.displayName || 'Administrator';
         const updatedProfile: AppUser = {
           uid: userProfile?.uid || currentUser?.uid || `user-${Date.now()}`,
-          email: ADMIN_EMAIL,
-          displayName: userProfile?.displayName || (newRole === 'admin' ? 'Irfan Haikal (Administrator)' : 'Irfan Haikal (Peserta)'),
+          email: currentEmail,
+          displayName: newRole === 'admin' ? currentName : `${currentName} (Peserta)`,
           role: newRole,
           participantId: userProfile?.participantId || participants[0]?.id,
         };
@@ -473,15 +476,16 @@ export default function App() {
         err.code === 'auth/operation-not-allowed'
       ) {
         // Fallback to recognized admin session
+        const currentEmail = ADMIN_EMAIL;
         const adminProfile: AppUser = {
           uid: `admin-${Date.now()}`,
-          email: ADMIN_EMAIL,
-          displayName: 'Irfan Haikal (Admin)',
+          email: currentEmail,
+          displayName: 'Administrator',
           role: 'admin',
         };
         setUserProfile(adminProfile);
         localStorage.setItem(STORAGE_USER_SESSION, JSON.stringify(adminProfile));
-        showToast('Log masuk sebagai Administrator (irfanhaikal03@gmail.com).');
+        showToast(`Log masuk sebagai Administrator (${currentEmail}).`);
         return;
       }
       showToast(err.message || 'Log masuk dibatalkan', true);
@@ -544,7 +548,7 @@ export default function App() {
         setIsCloudSyncing(false);
       } catch (err) {
         setIsCloudSyncing(false);
-        console.warn('Firestore write warning:', err);
+        handleFirestoreError(err, OperationType.WRITE, 'participants');
       }
     }
 
@@ -571,7 +575,7 @@ export default function App() {
         setIsCloudSyncing(false);
       } catch (err) {
         setIsCloudSyncing(false);
-        console.warn('Firestore delete warning:', err);
+        handleFirestoreError(err, OperationType.DELETE, 'participants');
       }
     }
 

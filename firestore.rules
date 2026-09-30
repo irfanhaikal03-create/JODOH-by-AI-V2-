@@ -1,12 +1,12 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Global Safety Net
+    // Global Safety Net - Default Deny
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // Helper functions
+    // Primitive Guards & Helper Functions
     function isValidId(id) {
       return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
@@ -23,16 +23,23 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
     function isAdmin() {
       return isSignedIn() && (
-        request.auth.token.email == 'irfanhaikal03@gmail.com' ||
+        (request.auth.token.email_verified == true && (
+          request.auth.token.email == 'hfirdaus2000@gmail.com' ||
+          request.auth.token.email == 'irfanhaikal03@gmail.com'
+        )) ||
         exists(/databases/$(database)/documents/admins/$(request.auth.uid))
       );
     }
 
     function isValidParticipant(data) {
       return data.keys().hasAll(['id', 'name', 'gender', 'age', 'occupation', 'location', 'marital', 'smoking', 'hobbies', 'ideal', 'ownerId']) &&
-        data.id is string && data.id.size() <= 128 &&
+        data.id is string && data.id.size() > 0 && data.id.size() <= 128 &&
         data.name is string && data.name.size() > 0 && data.name.size() <= 150 &&
         data.gender in ['Male', 'Female'] &&
         data.age is number && data.age >= 18 && data.age <= 120 &&
@@ -42,37 +49,81 @@ service cloud.firestore {
         data.smoking in ['Non-Smoker', 'Smoker'] &&
         data.hobbies is list && data.hobbies.size() <= 30 &&
         data.ideal is string && data.ideal.size() <= 1000 &&
-        (!('photo' in data) || (data.photo is string && data.photo.size() <= 500000));
+        data.ownerId is string && data.ownerId.size() <= 128 &&
+        (!('userId' in data) || (data.userId is string && data.userId.size() <= 128)) &&
+        (!('userEmail' in data) || (data.userEmail is string && data.userEmail.size() <= 150)) &&
+        (!('photo' in data) || (data.photo is string && data.photo.size() <= 500000)) &&
+        (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 100)) &&
+        (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 100));
     }
 
     function isValidMatch(data) {
       return data.keys().hasAll(['rank', 'maleName', 'femaleName', 'score', 'whyTheyMatch', 'potentialChallenges', 'recommendedActivities', 'ownerId']) &&
         data.rank is number && data.rank >= 1 && data.rank <= 100 &&
-        data.maleName is string && data.maleName.size() <= 150 &&
-        data.femaleName is string && data.femaleName.size() <= 150 &&
+        data.maleName is string && data.maleName.size() > 0 && data.maleName.size() <= 150 &&
+        data.femaleName is string && data.femaleName.size() > 0 && data.femaleName.size() <= 150 &&
         data.score is number && data.score >= 0 && data.score <= 100 &&
         data.whyTheyMatch is string && data.whyTheyMatch.size() <= 3000 &&
         data.potentialChallenges is string && data.potentialChallenges.size() <= 3000 &&
-        data.recommendedActivities is list && data.recommendedActivities.size() <= 30;
+        data.recommendedActivities is list && data.recommendedActivities.size() <= 30 &&
+        data.ownerId is string && data.ownerId.size() <= 128 &&
+        (!('maleId' in data) || (data.maleId is string && data.maleId.size() <= 128)) &&
+        (!('femaleId' in data) || (data.femaleId is string && data.femaleId.size() <= 128)) &&
+        (!('maleAge' in data) || (data.maleAge is number)) &&
+        (!('femaleAge' in data) || (data.femaleAge is number)) &&
+        (!('maleOccupation' in data) || (data.maleOccupation is string && data.maleOccupation.size() <= 150)) &&
+        (!('femaleOccupation' in data) || (data.femaleOccupation is string && data.femaleOccupation.size() <= 150)) &&
+        (!('maleLocation' in data) || (data.maleLocation is string && data.maleLocation.size() <= 150)) &&
+        (!('femaleLocation' in data) || (data.femaleLocation is string && data.femaleLocation.size() <= 150)) &&
+        (!('maleSmoking' in data) || (data.maleSmoking is string && data.maleSmoking.size() <= 50)) &&
+        (!('femaleSmoking' in data) || (data.femaleSmoking is string && data.femaleSmoking.size() <= 50)) &&
+        (!('maleHobbies' in data) || (data.maleHobbies is list && data.maleHobbies.size() <= 30)) &&
+        (!('femaleHobbies' in data) || (data.femaleHobbies is list && data.femaleHobbies.size() <= 30)) &&
+        (!('malePhoto' in data) || (data.malePhoto is string && data.malePhoto.size() <= 500000)) &&
+        (!('femalePhoto' in data) || (data.femalePhoto is string && data.femalePhoto.size() <= 500000)) &&
+        (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 100));
+    }
+
+    function isValidSavedSession(data) {
+      return data.keys().hasAll(['id', 'title', 'createdAt', 'matches', 'isPublished', 'participantsCount']) &&
+        data.id is string && data.id.size() > 0 && data.id.size() <= 128 &&
+        data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
+        data.createdAt is string && data.createdAt.size() <= 100 &&
+        data.matches is list && data.matches.size() <= 100 &&
+        data.isPublished is bool &&
+        data.participantsCount is number && data.participantsCount >= 0 &&
+        (!('savedBy' in data) || (data.savedBy is string && data.savedBy.size() <= 150)) &&
+        (!('ownerId' in data) || (data.ownerId is string && data.ownerId.size() <= 128));
     }
 
     // Participants Collection - attendees glimpse & organizer management
     match /participants/{participantId} {
-      allow get, list: if isSignedIn();
-      allow create: if isSignedIn() && isValidId(participantId) && isValidParticipant(incoming()) && (isAdmin() || incoming().ownerId == request.auth.uid);
+      allow list: if isSignedIn();
+      allow get: if isSignedIn() && isValidId(participantId);
+      allow create: if isSignedIn() && isValidId(participantId) && isValidParticipant(incoming()) && (isAdmin() || (incoming().ownerId == request.auth.uid && isVerifiedUser()));
       allow update: if isSignedIn() && isValidId(participantId) && isValidParticipant(incoming()) && (isAdmin() || (existing().ownerId == request.auth.uid && incoming().ownerId == existing().ownerId));
       allow delete: if isSignedIn() && isValidId(participantId) && (isAdmin() || existing().ownerId == request.auth.uid);
     }
 
     // Matches Collection - read by attendees, generated/managed by Admin
     match /matches/{matchId} {
-      allow get, list: if isSignedIn();
+      allow list: if isSignedIn();
+      allow get: if isSignedIn() && isValidId(matchId);
       allow create: if isSignedIn() && isValidId(matchId) && isValidMatch(incoming()) && (isAdmin() || incoming().ownerId == request.auth.uid);
       allow update: if isSignedIn() && isValidId(matchId) && isValidMatch(incoming()) && (isAdmin() || (existing().ownerId == request.auth.uid && incoming().ownerId == existing().ownerId));
       allow delete: if isSignedIn() && isValidId(matchId) && (isAdmin() || existing().ownerId == request.auth.uid);
     }
 
-    // Event & Admin Status
+    // Saved Match Sessions Collection - Admin manages, published viewable by attendees
+    match /saved_match_sessions/{sessionId} {
+      allow list: if isSignedIn() && (isAdmin() || resource.data.isPublished == true);
+      allow get: if isSignedIn() && isValidId(sessionId) && (isAdmin() || resource.data.isPublished == true);
+      allow create: if isSignedIn() && isValidId(sessionId) && isValidSavedSession(incoming()) && isAdmin();
+      allow update: if isSignedIn() && isValidId(sessionId) && isValidSavedSession(incoming()) && isAdmin();
+      allow delete: if isSignedIn() && isValidId(sessionId) && isAdmin();
+    }
+
+    // System Admins
     match /admins/{adminId} {
       allow get, list: if isSignedIn();
       allow write: if isAdmin();

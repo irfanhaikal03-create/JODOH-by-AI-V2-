@@ -42,8 +42,15 @@ export {
   type User,
 } from 'firebase/auth';
 
-export const ADMIN_EMAIL = 'irfanhaikal03@gmail.com';
+export const ADMIN_EMAILS = ['hfirdaus2000@gmail.com', 'irfanhaikal03@gmail.com'];
+export const ADMIN_EMAIL = 'hfirdaus2000@gmail.com';
 export const ADMIN_PASSCODE = 'JODOH2026';
+
+export function isAdminEmail(email?: string | null): boolean {
+  if (!email) return false;
+  const normalized = email.trim().toLowerCase();
+  return ADMIN_EMAILS.some(e => e.toLowerCase() === normalized);
+}
 
 export enum OperationType {
   CREATE = 'create',

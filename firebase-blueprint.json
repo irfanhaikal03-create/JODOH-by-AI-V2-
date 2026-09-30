@@ -16,8 +16,8 @@
         "hobbies": { "type": "array" },
         "ideal": { "type": "string", "maxLength": 1000 },
         "photo": { "type": "string", "maxLength": 500000 },
-        "createdAt": { "type": "string" },
-        "updatedAt": { "type": "string" },
+        "createdAt": { "type": "string", "maxLength": 100 },
+        "updatedAt": { "type": "string", "maxLength": 100 },
         "ownerId": { "type": "string", "maxLength": 128 },
         "userId": { "type": "string", "maxLength": 128 },
         "userEmail": { "type": "string", "maxLength": 150 }
@@ -42,6 +42,8 @@
       "type": "object",
       "properties": {
         "rank": { "type": "number" },
+        "maleId": { "type": "string", "maxLength": 128 },
+        "femaleId": { "type": "string", "maxLength": 128 },
         "maleName": { "type": "string", "maxLength": 150 },
         "maleAge": { "type": "number" },
         "maleOccupation": { "type": "string", "maxLength": 150 },
@@ -63,7 +65,7 @@
         "valueSynthesisPercent": { "type": "number" },
         "frictionProbabilityPercent": { "type": "number" },
         "crossCheckedTraits": { "type": "array" },
-        "createdAt": { "type": "string" },
+        "createdAt": { "type": "string", "maxLength": 100 },
         "ownerId": { "type": "string", "maxLength": 128 }
       },
       "required": [
@@ -76,6 +78,29 @@
         "recommendedActivities",
         "ownerId"
       ]
+    },
+    "SavedMatchSession": {
+      "title": "SavedMatchSession",
+      "description": "An archived matchmaking session containing paired attendee results.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 200 },
+        "createdAt": { "type": "string", "maxLength": 100 },
+        "matches": { "type": "array" },
+        "isPublished": { "type": "boolean" },
+        "savedBy": { "type": "string", "maxLength": 150 },
+        "participantsCount": { "type": "number" },
+        "ownerId": { "type": "string", "maxLength": 128 }
+      },
+      "required": [
+        "id",
+        "title",
+        "createdAt",
+        "matches",
+        "isPublished",
+        "participantsCount"
+      ]
     }
   },
   "firestore": {
@@ -86,6 +111,10 @@
     "/matches/{matchId}": {
       "schema": { "$ref": "#/entities/MatchResult" },
       "description": "Collection of saved top compatibility matches."
+    },
+    "/saved_match_sessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/SavedMatchSession" },
+      "description": "Collection of archived match sessions with publication status."
     }
   }
 }
