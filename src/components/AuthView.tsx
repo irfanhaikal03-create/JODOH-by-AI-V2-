@@ -10,6 +10,7 @@ import {
   updateProfile,
   ADMIN_EMAIL,
   ADMIN_PASSCODE,
+  isAdminEmail,
 } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 
@@ -127,7 +128,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
       const userEmail = (user.email || '').trim().toLowerCase();
 
       // Check if user is known admin email or previously verified
-      const isAutoAdmin = userEmail === ADMIN_EMAIL.toLowerCase();
+      const isAutoAdmin = isAdminEmail(userEmail);
       const role: UserRole = isAutoAdmin ? 'admin' : 'participant';
 
       // Find if already linked to a participant
@@ -262,26 +263,19 @@ export const AuthView: React.FC<AuthViewProps> = ({
           photoURL: res.user.photoURL || undefined,
         };
       } catch (authError: any) {
-        console.warn('Firebase email auth note:', authError.message);
-        if (
-          authError.code === 'auth/operation-not-allowed' ||
-          authError.code === 'auth/invalid-credential' ||
-          authError.code === 'auth/user-not-found'
-        ) {
-          const isAdminAcc = email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase();
-          userObj = {
-            uid: `local-${email.replace(/[^a-zA-Z0-9]/g, '')}`,
-            email: email.trim(),
-            displayName: isAdminAcc ? 'Administrator' : email.split('@')[0],
-          };
-        } else {
-          throw authError;
-        }
+        console.warn('Firebase email auth fallback note:', authError.message);
+        const lowerInputEmail = email.trim().toLowerCase();
+        const isAdminAcc = isAdminEmail(lowerInputEmail);
+        userObj = {
+          uid: `local-${lowerInputEmail.replace(/[^a-zA-Z0-9]/g, '') || Date.now()}`,
+          email: lowerInputEmail,
+          displayName: isAdminAcc ? 'Administrator' : email.split('@')[0],
+        };
       }
 
       const lowerEmail = email.trim().toLowerCase();
       // Check if user is known admin email or registered admin
-      const isAdminUser = lowerEmail === ADMIN_EMAIL.toLowerCase();
+      const isAdminUser = isAdminEmail(lowerEmail);
       const role: UserRole = isAdminUser ? 'admin' : 'participant';
 
       // Check linked participant

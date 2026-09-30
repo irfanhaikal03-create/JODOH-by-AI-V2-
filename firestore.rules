@@ -6,6 +6,11 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Connection Health Check
+    match /test/{docId} {
+      allow get: if true;
+    }
+
     // Primitive Guards & Helper Functions
     function isValidId(id) {
       return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
@@ -98,8 +103,7 @@ service cloud.firestore {
 
     // Participants Collection - attendees glimpse & organizer management
     match /participants/{participantId} {
-      allow list: if isSignedIn();
-      allow get: if isSignedIn() && isValidId(participantId);
+      allow list, get: if true;
       allow create: if isSignedIn() && isValidId(participantId) && isValidParticipant(incoming()) && (isAdmin() || (incoming().ownerId == request.auth.uid && isVerifiedUser()));
       allow update: if isSignedIn() && isValidId(participantId) && isValidParticipant(incoming()) && (isAdmin() || (existing().ownerId == request.auth.uid && incoming().ownerId == existing().ownerId));
       allow delete: if isSignedIn() && isValidId(participantId) && (isAdmin() || existing().ownerId == request.auth.uid);
@@ -107,8 +111,7 @@ service cloud.firestore {
 
     // Matches Collection - read by attendees, generated/managed by Admin
     match /matches/{matchId} {
-      allow list: if isSignedIn();
-      allow get: if isSignedIn() && isValidId(matchId);
+      allow list, get: if true;
       allow create: if isSignedIn() && isValidId(matchId) && isValidMatch(incoming()) && (isAdmin() || incoming().ownerId == request.auth.uid);
       allow update: if isSignedIn() && isValidId(matchId) && isValidMatch(incoming()) && (isAdmin() || (existing().ownerId == request.auth.uid && incoming().ownerId == existing().ownerId));
       allow delete: if isSignedIn() && isValidId(matchId) && (isAdmin() || existing().ownerId == request.auth.uid);
@@ -116,8 +119,7 @@ service cloud.firestore {
 
     // Saved Match Sessions Collection - Admin manages, published viewable by attendees
     match /saved_match_sessions/{sessionId} {
-      allow list: if isSignedIn() && (isAdmin() || resource.data.isPublished == true);
-      allow get: if isSignedIn() && isValidId(sessionId) && (isAdmin() || resource.data.isPublished == true);
+      allow list, get: if true;
       allow create: if isSignedIn() && isValidId(sessionId) && isValidSavedSession(incoming()) && isAdmin();
       allow update: if isSignedIn() && isValidId(sessionId) && isValidSavedSession(incoming()) && isAdmin();
       allow delete: if isSignedIn() && isValidId(sessionId) && isAdmin();

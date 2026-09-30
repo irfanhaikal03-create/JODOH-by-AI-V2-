@@ -185,7 +185,7 @@ export default function App() {
 
   // Real-time Firestore sync for Participants when user is logged in
   useEffect(() => {
-    if (!currentUser && !userProfile) return;
+    if (!currentUser) return;
 
     const path = 'participants';
     const participantsCol = collection(db, path);
@@ -236,7 +236,7 @@ export default function App() {
     );
 
     return () => unsubscribe();
-  }, [currentUser, userProfile]);
+  }, [currentUser, isAdmin]);
 
   // Sync participants to Local Storage
   useEffect(() => {
@@ -258,7 +258,7 @@ export default function App() {
 
   // Real-time Firestore sync for Saved Match Sessions
   useEffect(() => {
-    if (!currentUser && !userProfile) return;
+    if (!currentUser) return;
 
     const path = 'saved_match_sessions';
     const sessionsCol = collection(db, path);
@@ -290,7 +290,7 @@ export default function App() {
     );
 
     return () => unsubscribe();
-  }, [currentUser, userProfile]);
+  }, [currentUser]);
 
   // Sync saved sessions to localStorage
   useEffect(() => {
