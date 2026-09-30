@@ -1,167 +1,165 @@
-# JODOH by A.I
+# ❤️ JODOH by A.I
 
-> **Executive-Tier Matchmaking Suite for Event Organizers**  
-> Powered by Google Gemini AI, Firebase Firestore & Authentication, React 19, TypeScript, and Tailwind CSS.
-
----
-
-## 🌟 Overview
-
-**JODOH by A.I** is an executive-grade matchmaking and attendee dossier management platform designed for speed-dating hosts, event managers, and professional matchmakers. 
-
-The suite enables organizers to manage attendee dossiers with discreet privacy, evaluate multi-dimensional compatibility vectors, and generate deterministic or AI-synthesized **exclusive 1-to-1 pairings** where each candidate appears strictly once (zero partner overlap).
+> **Sistem Padanan Jodoh Pintar Eksekutif untuk Penganjur Acara & Pengendali Temuduga Cinta**  
+> Dikuasakan oleh Google Gemini AI, Firebase Firestore & Authentication, React 19, TypeScript, dan Tailwind CSS.
 
 ---
 
-## ✨ Key Features
+## 🔗 Pautan Rasmi Projek
 
-### 1. Cohort Masterfile & Candidate Registry
-- **Comprehensive Profiles**: Register participants with photo (file upload or URL), full name, age (18–99), gender, marital status, smoking habit, profession, location, passions/hobbies, and qualitative partner preferences.
-- **Visual Monogram Avatars**: Automatic graceful fallback to stylized monogram avatars if no photograph is provided.
-- **Real-Time Search & Filtering**: Instant search across candidate names, occupations, locations, and interests, combined with segmented gender and habit filters.
-- **Dual Persistence Architecture**: Continuous local storage persistence combined with real-time Firebase Firestore cloud synchronization.
-
-### 2. Algorithmic & Gemini AI Matchmaking Engine
-- **Strict 1-to-1 Exclusivity**: Evaluates the entire cohort permutation matrix to discover optimal pairing configurations where no person appears more than once.
-- **Multi-Vector Affinity Scoring**:
-  - Core demographic and age alignment
-  - Geographic proxemics (metro zone proximity)
-  - Lifestyle and smoking status concordance
-  - Career trajectory and work-life boundaries
-  - Mutual passions, leisure synergies, and core life values
-- **PRD Section F04 Minimum Quorum Enforcer**: Automated validation ensuring at least 1 male and 1 female profile exist before triggering synthesis. Includes a simulation mode for testing quorum edge cases.
-
-### 3. Top Pairings Results Dashboard
-- **#1 Gold Ribbon Master Card**: High-affinity showcase pairing with side-by-side attendee dossiers, central affinity badge, and cross-checked trait chips.
-- **3-Pillar Qualitative Evaluation**:
-  1. *Why They Match*: AI-synthesized rationale and value alignment score.
-  2. *Potential Challenges*: Constructive friction analysis and risk mitigation probability.
-  3. *Tailored Date Recommendations*: Numbered, context-specific icebreaker ideas tailored to their mutual passions.
-- **Ranks #2 through #10 Hierarchy**: Interactive accordion cards with expandable deep-dive drawers and a global "Expand / Collapse All" toggle.
-
-### 4. Executive Export & Reporting
-- **Client-Side PDF Dossier**: Instant compilation and download of a multi-page executive match report formatted for presentation and archiving (built with `jsPDF` for reliable operation in iframe and sandboxed environments).
-- **In-App Dossier Preview & Print Modal**: Full visual preview of the dossier report on-screen with direct Print / Save as PDF capability.
-- **CSV Data Export**: One-click download of structured match data for spreadsheets and external CRM systems.
-
-### 5. Firebase Cloud Sync & Google Authentication
-- **Google Sign-In**: Quick authentication for event organizers.
-- **Firestore Database**: Stores participants and generated compatibility results securely with user-level isolation (`ownerId == request.auth.uid`).
-- **Offline & Local Cache First**: Works seamlessly offline; syncs automatically once signed in.
-
-### 6. Responsive Design
-- Fully optimized for desktop workstations, tablets, and smartphones.
-- Mobile slide-over navigation with dedicated dismiss controls.
-- Adaptive typography and fluid metric cards preventing layout clipping or text overlap on narrow screens.
+- 🌐 **Google AI Studio App**: [https://ai.studio/apps/e175b9ac-8c2d-4a4a-b3e1-151b8b9312bd](https://ai.studio/apps/e175b9ac-8c2d-4a4a-b3e1-151b8b9312bd)
+- 🐙 **GitHub Repository**: [https://github.com/irfanhaikal03-create/JODOH-by-AI-V2-](https://github.com/irfanhaikal03-create/JODOH-by-AI-V2-)
 
 ---
 
-## 🛠️ Tech Stack
+## 📖 Apa Itu JODOH by A.I?
 
-- **Framework**: [React 19](https://react.dev/) + [Vite](https://vitejs.dev/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/) (strict mode)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **AI Engine**: [Google Gen AI SDK (`@google/genai`)](https://www.npmjs.com/package/@google/genai)
-- **Cloud Database & Auth**: [Firebase Firestore & Firebase Auth](https://firebase.google.com/)
-- **Backend API**: [Express](https://expressjs.com/) on Node.js / [TSX](https://github.com/privatenumber/tsx)
-- **PDF Generation**: [jsPDF](https://github.com/parallax/jsPDF)
-- **Icons & Typography**: Google Fonts (*Playfair Display*, *Plus Jakarta Sans*, *Material Symbols Outlined*)
+**JODOH by A.I** ialah platform moden yang direka khas untuk penganjur acara *speed-dating*, perunding jodoh, dan pengurus komuniti.
+
+Aplikasi ini memudahkan penganjur mengurus profil peserta (lelaki & wanita) dan menggunakan kepintaran buatan (**Google Gemini AI**) untuk menghasilkan **padanan eksklusif 1-lawan-1**. Setiap peserta hanya akan dipadankan dengan seorang pasangan terbaik tanpa sebarang pertindihan (*zero overlap*).
 
 ---
 
-## 🚀 Getting Started
+## ✨ Ciri-Ciri Utama
 
-### Prerequisites
+### 1. 📋 Pengurusan Profil Peserta (Kolam Calon)
+- **Profil Lengkap**: Simpan maklumat nama, umur, jantina, pekerjaan, lokasi, status perkahwinan, tabiat merokok, hobi, dan kriteria pasangan idaman.
+- **Gambar & Avatar**: Boleh muat naik gambar profil atau URL, dengan sokongan avatar monogram automatik jika tiada gambar.
+- **Carian & Tapis Pantas**: Cari peserta mengikut nama, bandar, pekerjaan, atau minat dalam masa nyata.
+- **Mod Glimpse Peserta**: Paparan khusus untuk peserta melihat ringkasan calon-calon lain secara selamat.
 
-- [Node.js](https://nodejs.org/) (v18 or higher recommended)
-- [npm](https://www.npmjs.com/) or [bun](https://bun.sh/)
-- A **Gemini API Key** from [Google AI Studio](https://aistudio.google.com/)
-- (Optional) A **Firebase Project** for cloud synchronization
+### 2. 🤖 Enjin Pemadanan Pintar (Gemini AI)
+- **Padanan 1-ke-1 Eksklusif**: Algoritma memastikan setiap peserta hanya dipadankan dengan seorang pasangan sahaja.
+- **Skor Keserasian Pelbagai Vektor**: Menilai keserasian berdasarkan jurang umur, lokasi geografi, gaya hidup, nilai murni, kerjaya, dan hobi yang dikongsi.
+- **Ulasan Mendalam oleh AI**:
+  - **Sebab Serasi**: Kenapa pasangan ini sesuai bersama.
+  - **Potensi Cabaran**: Perkara yang perlu diberi perhatian atau toleransi.
+  - **Cadangan Aktiviti Temu Janji**: Idea *ice-breaking* dan tarikh pertama yang disesuaikan mengikut hobi bersama.
 
-### Installation
+### 3. 📁 Arkib Sesi & Kawalan Terbitan (Draf vs Terbit)
+- **Simpan Sesi Padanan**: Simpan pelbagai sesi larian pemadanan dalam arkib aplikasi.
+- **Status Draf & Terbit**: Admin boleh menyemak keputusan terlebih dahulu secara tertutup (Draf) sebelum menerbitkannya kepada peserta.
+- **Kawalan Admin Penuh**: Hanya pentadbir yang disahkan boleh menjana, memadam, atau menetapkan semula data sistem.
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/your-username/jodoh-by-ai.git
-   cd jodoh-by-ai
-   ```
+### 4. 📄 Eksport Laporan Rasmi (PDF & CSV)
+- **Draf PDF Eksekutif**: Jana dan muat turun dokumen PDF rasmi laporan padanan lengkap untuk arkib atau cetakan fizikal.
+- **Pratonton Cetakan**: Boleh semak dan cetak terus dari pelayar web (*Print to PDF*).
+- **Eksport CSV**: Muat turun senarai padanan dalam format hamparan (*Excel/Sheets*).
 
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Configure Environment Variables**:
-   Create a `.env` file in the root directory (refer to `.env.example`):
-   ```env
-   GEMINI_API_KEY="your-gemini-api-key-here"
-   PORT=3000
-   ```
-
-4. **Start the Development Server**:
-   ```bash
-   npm run dev
-   ```
-   Open your browser and navigate to `http://localhost:3000`.
+### 5. ☁️ Keselamatan & Integrasi Firebase Cloud
+- **Log Masuk Google**: Akses pantas dan selamat menggunakan akaun Google.
+- **Firebase Firestore**: Simpanan awan masa nyata (*real-time sync*) dengan perlindungan keselamatan berasaskan peranan (RBAC).
+- **Sokongan Luar Talian (Offline)**: Aplikasi tetap berfungsi menggunakan simpanan tempatan (*LocalStorage*) sekiranya tiada sambungan internet.
 
 ---
 
-## 📜 Available Scripts
+## 🛠️ Teknologi Yang Digunakan
 
-| Script | Command | Description |
-| :--- | :--- | :--- |
-| **`npm run dev`** | `tsx server.ts` | Runs the full-stack development server with Vite middleware |
-| **`npm run build`** | `vite build` | Compiles client assets into the `dist/` directory |
-| **`npm start`** | `tsx server.ts` | Starts the production server |
-| **`npm run lint`** | `tsc --noEmit` | Runs TypeScript type checking across the project |
+| Komponen | Teknologi |
+| :--- | :--- |
+| **Frontend** | React 19, Vite, Tailwind CSS v4, Motion |
+| **Bahasa** | TypeScript |
+| **Model AI** | Google Gen AI SDK (`@google/genai` / Gemini 2.5 Flash) |
+| **Pangkalan Data & Auth** | Firebase Firestore & Google Firebase Auth |
+| **Backend / Pelayan** | Express.js & TSX (Node.js) |
+| **Penjanaan PDF** | jsPDF |
+| **Ikon & Tipografi** | Google Fonts (Playfair Display, Plus Jakarta Sans, Material Symbols) |
 
 ---
 
-## 📂 Project Structure
+## 🚀 Panduan Memulakan Projek (Langkah Demi Langkah)
+
+### Keperluan Awal
+Pastikan komputer anda sudah dipasang dengan:
+1. **Node.js** (Versi 18 ke atas) - [Muat Turun Node.js](https://nodejs.org/)
+2. **Git** - [Muat Turun Git](https://git-scm.com/)
+3. **Kunci API Gemini** - Dapatkan secara percuma di [Google AI Studio](https://aistudio.google.com/)
+
+---
+
+### Cara Pemasangan
+
+#### 1. Klon Repositori
+Buka terminal / Command Prompt dan jalankan:
+```bash
+git clone https://github.com/irfanhaikal03-create/JODOH-by-AI-V2-.git
+cd JODOH-by-AI-V2-
+```
+
+#### 2. Pasang Dependensi
+```bash
+npm install
+```
+
+#### 3. Tetapkan Fail Konfigurasi `.env`
+Salin fail `.env.example` kepada `.env`:
+```bash
+cp .env.example .env
+```
+Buka fail `.env` dan masukkan kunci API Gemini anda:
+```env
+GEMINI_API_KEY="masukkan_kunci_api_gemini_anda_di_sini"
+PORT=3000
+```
+
+#### 4. Jalankan Aplikasi
+```bash
+npm run dev
+```
+Buka pelayar web (*browser*) anda dan layari:
+👉 **`http://localhost:3000`**
+
+---
+
+## 📜 Senarai Perintah Skrip (Scripts)
+
+| Perintah | Fungsi |
+| :--- | :--- |
+| `npm run dev` | Menjalankan pelayan pembangunan (*development server*) |
+| `npm run build` | Menghasilkan binaan pengeluaran (*production build*) ke folder `dist/` |
+| `npm start` | Menjalankan pelayan mod pengeluaran |
+| `npm run lint` | Menyemak ralat kod TypeScript |
+
+---
+
+## 🗂️ Struktur Fail Utama
 
 ```text
-├── index.html                      # HTML entry point with metadata & typography
-├── metadata.json                   # App capabilities & configuration
-├── package.json                    # Project dependencies & scripts
-├── server.ts                       # Express backend & Gemini API integration
-├── firestore.rules                 # Hardened Attribute-Based Access Control security rules
-├── firebase-blueprint.json         # Intermediate schema definition for Firestore
-├── firebase-applet-config.json     # Firebase web project configuration
+├── index.html                  # Fail utama HTML & fon antaramuka
+├── server.ts                   # Pelayan Express & integrasi API Google Gemini
+├── firestore.rules             # Peraturan keselamatan Firebase Firestore
+├── firebase-blueprint.json     # Skema struktur data pangkalan data
+├── firebase-applet-config.json # Konfigurasi projek Firebase
 ├── src/
-│   ├── main.tsx                    # React client entry point
-│   ├── firebase.ts                 # Firebase app, auth, and firestore initialization
-│   ├── index.css                   # Tailwind v4 theme, design tokens & typography
-│   ├── App.tsx                     # Main application layout, auth & global state
-│   ├── types.ts                    # TypeScript data models (Participant, MatchResult)
+│   ├── main.tsx                # Titik mula React
+│   ├── App.tsx                 # Logik utama aplikasi, navigasi & pengurusan data
+│   ├── firebase.ts             # Inisialisasi Firebase Auth & Firestore
+│   ├── types.ts                # Takrifan jenis data (Participant, MatchResult, dll.)
+│   ├── index.css               # Gaya Tailwind CSS & reka bentuk tema
 │   ├── data/
-│   │   └── initialData.ts          # Seed candidate profiles & pre-computed matches
+│   │   └── initialData.ts      # Data contoh calon peserta permulaan
 │   └── components/
-│       ├── Header.tsx              # Application header, branding, engine status & auth
-│       ├── Sidebar.tsx             # Navigation rail with mobile drawer
-│       ├── ParticipantsPoolView.tsx# Cohort masterfile, candidate grid & filters
-│       ├── TopMatchesView.tsx      # Match results, Gold Ribbon card & export triggers
-│       ├── DossierPreviewModal.tsx # In-app executive PDF print & preview dialog
-│       ├── AddEditParticipantModal.tsx # Participant modal with photo upload
-│       ├── DeleteConfirmModal.tsx  # Deletion verification dialog
-│       ├── GenerationModal.tsx     # Synthesis progress visualization
-│       ├── InsufficientWarningModal.tsx # Quorum check modal (PRD Section F04)
-│       ├── AffinityVectorsModal.tsx# Mathematical vector model explanation
-│       ├── MatchingRulesModal.tsx  # Organizer heuristics documentation
-│       └── Toast.tsx               # Notification toasts
-├── tsconfig.json                   # TypeScript compiler configuration
-└── vite.config.ts                  # Vite build tool configuration
+│       ├── Header.tsx          # Bar atas aplikasi & status enjin
+│       ├── Sidebar.tsx         # Menu navigasi sisi (Desktop & Mobile)
+│       ├── ParticipantsPoolView.tsx # Paparan senarai calon peserta
+│       ├── TopMatchesView.tsx  # Paparan senarai Top 10 padanan AI
+│       ├── AddEditParticipantModal.tsx # Borang tambah/edit calon
+│       ├── SavedSessionsModal.tsx # Pengurusan arkib sesi padanan
+│       ├── DossierPreviewModal.tsx # Pratonton & cetakan PDF
+│       └── AdminResetModal.tsx # Dialog tetapan semula data admin
+└── README.md                   # Dokumentasi panduan projek
 ```
 
 ---
 
-## 🔒 Privacy & Security
+## 🔒 Privasi & Keselamatan Data
 
-- **Attribute-Based Firestore Rules**: Strict security rules prevent cross-tenant data leakage; only the authenticated organizer can access their own participants and match dossiers.
-- **Local Fallback**: Full functionality is preserved locally even without internet access or when unauthenticated.
-- **Secure Server-Side API**: Gemini AI API keys remain server-side and are never exposed to browser clients.
+- **Kunci API Selamat**: Kunci API Google Gemini disimpan di bahagian pelayan (*server-side*) dan tidak didedahkan kepada pelayar pengguna.
+- **Peraturan Keselamatan Firestore**: Data dilindungi dengan kawalan berasaskan peranan (RBAC) di mana hanya pentadbir yang disahkan boleh mengubah keputusan pemadanan rasmi.
+- **Sandaran Tempatan**: Data peserta kekal selamat disimpan pada peranti pengguna melalui simpanan tempatan walaupun pangkalan data awan terputus.
 
 ---
 
-## 📄 License
+## 📄 Lesen
 
-This project is licensed under the [Apache License 2.0](LICENSE).
+Projek ini dilesenkan di bawah lesen **Apache License 2.0**.
