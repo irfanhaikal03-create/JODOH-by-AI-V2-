@@ -386,6 +386,174 @@ Return valid JSON matching the schema.`;
   }
 });
 
+// REAL-TIME AI DATING COMPANION & WINGMAN
+// Exclusively restricted strictly to the attendee's assigned/paired partner!
+app.post('/api/ai/dating-companion', async (req, res) => {
+  try {
+    const {
+      participant,
+      partner,
+      matchDossier,
+      message,
+      history = [],
+      mode = 'chat', // 'chat' | 'recap' | 'activity_swipe' | 'icebreaker'
+    } = req.body;
+
+    if (!participant || !partner) {
+      return res.status(400).json({ error: 'Maklumat peserta dan pasangan padanan diperlukan.' });
+    }
+
+    const participantName = participant.name || 'Peserta';
+    const partnerName = partner.name || 'Pasangan Anda';
+
+    // System instruction enforcing strict partner-only lock
+    const systemInstruction = `Anda ialah "Jodoh AI Dating Wingman" (Pembantu Peribadi Temu Janji Jodoh by AI) khas untuk peserta bernama "${participantName}".
+
+PERATURAN KESELAMATAN & INTEGRITI KETAT:
+1. Peserta "${participantName}" HANYA dipadankan secara rasmi dan eksklusif dengan pasangannya: "${partnerName}".
+2. Anda HANYA dibenarkan menjawab soalan, memberi panduan, menganalisis keserasian, mencadangkan aktiviti, dan merecap perjalanan temu janji mengenai "${partnerName}".
+3. Sekiranya pengguna cuba bertanyakan tentang calon peserta lain, individu lain, atau cuba memadankan diri dengan orang selain "${partnerName}", anda MESTI menolak secara sopan, mesra, dan beradab:
+   "Maaf, sebagai pembantu AI peribadi sesi dating anda, saya hanya dibenarkan membimbing perjalanan dan interaksi anda bersama pasangan padanan rasmi anda, iaitu ${partnerName}. Mari kita fokus kepada mengenali beliau dengan lebih mendalam!"
+4. Sentiasa beri nasihat yang membina, beradab, berempati, santai, dan praktikal dalam Bahasa Melayu mesra (atau campur Inggeris yang natural seperti percakapan seharian di Malaysia).
+
+PROFIL PESERTA (${participantName}):
+- Jantina: ${participant.gender || 'Tidak dinyatakan'}
+- Umur: ${participant.age || 'N/A'} tahun
+- Pekerjaan: ${participant.occupation || 'N/A'}
+- Lokasi: ${participant.location || 'N/A'}
+- Tabiat Merokok: ${participant.smoking || 'N/A'}
+- Hobi / Minat: ${Array.isArray(participant.hobbies) ? participant.hobbies.join(', ') : (participant.hobbies || 'N/A')}
+- Pasangan Idaman: ${participant.ideal || 'N/A'}
+
+PROFIL PASANGAN RASMI (${partnerName}):
+- Jantina: ${partner.gender || 'Tidak dinyatakan'}
+- Umur: ${partner.age || 'N/A'} tahun
+- Pekerjaan: ${partner.occupation || 'N/A'}
+- Lokasi: ${partner.location || 'N/A'}
+- Tabiat Merokok: ${partner.smoking || 'N/A'}
+- Hobi / Minat: ${Array.isArray(partner.hobbies) ? partner.hobbies.join(', ') : (partner.hobbies || 'N/A')}
+- Pasangan Idaman: ${partner.ideal || 'N/A'}
+
+DOSSIER KESERASIAN PADANAN RASMI:
+- Skor Keserasian: ${matchDossier?.score || 90}%
+- Mengapa Mereka Serasi: ${matchDossier?.whyTheyMatch || 'Mempunyai nilai hidup dan matlamat yang sehaluan.'}
+- Potensi Cabaran: ${matchDossier?.potentialChallenges || 'Perbezaan jadual kerja dan waktu rehat.'}
+- Ciri-Ciri Bersama: ${matchDossier?.crossCheckedTraits?.join(', ') || 'Lokasi berdekatan, minat saling melengkapi'}
+- Cadangan Aktiviti Awal: ${matchDossier?.recommendedActivities?.join('; ') || 'Minum kopi, berbual santai'}
+
+MOD SEMASA: ${mode}
+${
+  mode === 'recap'
+    ? 'FOKUS: Sila sediakan Rumusan Perjalanan Dating (Dating Recap). Berikan refleksi tentang apa yang telah dibincangkan, petanda positif (green flags), peluang untuk diterokai, dan tip untuk date seterusnya.'
+    : mode === 'activity_swipe'
+    ? 'FOKUS: Sila cadangkan 3 aktiviti interaktif & kad swipe yang menyeronokkan untuk dibuat bersama partner sekarang atau untuk date seterusnya, lengkap dengan soalan icebreaker spontan.'
+    : 'FOKUS: Jawab soalan pengguna dengan tip dating praktikal, icebreaker spontan, cara respon bualan partner, atau nasihat komunikasi santai.'
+}`;
+
+    if (process.env.GEMINI_API_KEY) {
+      try {
+        const contents: any[] = [];
+        if (Array.isArray(history) && history.length > 0) {
+          for (const item of history.slice(-6)) {
+            contents.push({
+              role: item.role === 'assistant' ? 'model' : 'user',
+              parts: [{ text: item.content || item.text || '' }],
+            });
+          }
+        }
+        contents.push({
+          role: 'user',
+          parts: [{ text: message || (mode === 'recap' ? 'Tolong recap sesi dating saya dan pasangan saya.' : 'Beri saya cadangan soalan icebreaker dan tip dating sekarang.') }],
+        });
+
+        const response = await ai.models.generateContent({
+          model: 'gemini-3.8-flash',
+          contents,
+          config: {
+            systemInstruction,
+            temperature: 0.7,
+            topP: 0.95,
+          },
+        });
+
+        const replyText = response.text || 'Hai! Saya bersedia membantu perjalanan temu janji anda bersama pasangan rasmi anda.';
+
+        const activities = [
+          {
+            id: `act-1-${Date.now()}`,
+            title: `Bicara Hobi & Minat ${partner.name.split(' ')[0]}`,
+            description: `Ketahui lebih mendalam tentang minat ${partner.name.split(' ')[0]} dalam ${Array.isArray(partner.hobbies) ? partner.hobbies[0] : 'aktiviti kegemarannya'}.`,
+            icebreaker: `"${partner.name.split(' ')[0]}, apa perkara paling menyeronokkan yang awak pernah alami sewaktu buat hobi kegemaran awak?"`,
+            vibe: 'Santai & Menarik',
+          },
+          {
+            id: `act-2-${Date.now()}`,
+            title: 'Teka-Teki Pasangan Idaman',
+            description: 'Uji keserasian pandangan masa depan dan impian hidup dengan cara yang santai dan tidak menekan.',
+            icebreaker: `"Kalau kita ada satu hari cuti tanpa kerja langsung, apa aktiviti impian yang awak nak kita buat sama-sama?"`,
+            vibe: 'Mendalam & Bererti',
+          },
+          {
+            id: `act-3-${Date.now()}`,
+            title: 'Eksplorasi Kafe / Tempat Menarik',
+            description: `Rancang 15 minit untuk berbual santai di sekitar ${partner.location || participant.location} atau pilih minuman kegemaran masing-masing.`,
+            icebreaker: `"Jom kita pilihkan satu menu rahsia atau minuman istimewa untuk satu sama lain!"`,
+            vibe: 'Spontan & Ceria',
+          },
+        ];
+
+        return res.json({
+          reply: replyText,
+          partnerName,
+          participantName,
+          suggestedActivities: activities,
+        });
+      } catch (geminiError: any) {
+        console.warn('Gemini AI companion endpoint error, falling back:', geminiError.message);
+      }
+    }
+
+    // High-quality conversational fallback
+    let fallbackReply = `Hai ${participantName}! Saya ialah AI Dating Wingman anda untuk sesi bersama ${partnerName}.\n\nBerdasarkan profil ${partnerName} (${partner.occupation}, minat dalam ${Array.isArray(partner.hobbies) ? partner.hobbies.join(', ') : partner.hobbies}):\n\n💡 **Tip Pantas:** Beliau menghargai ${matchDossier?.whyTheyMatch || 'nilai hidup yang selaras dan persefahaman matang'}. Cuba mulakan dengan bertanya tentang bagaimana beliau memulakan kerjayanya sebagai ${partner.occupation} atau pengalaman hobi kegemarannya!`;
+
+    if (mode === 'recap') {
+      fallbackReply = `📝 **Rumusan Sesi Dating (${participantName} & ${partnerName})**:\n\n✨ **Skor Keserasian Rasmi:** ${matchDossier?.score || 92}%\n🟢 **Kekuatan Bersama:** Nilai hidup yang melengkapi, gaya komunikasi yang harmoni, dan komitmen terhadap keseimbangan kerja-hidup.\n⚠️ **Perhatian Bersama:** ${matchDossier?.potentialChallenges || 'Peruntukkan masa rehat berkualiti memandangkan jadual kerja yang sibuk.'}\n🎯 **Langkah Seterusnya:** Teruskan dengan aktiviti santai seperti minum kopi atau bertukar cadangan buku/muzik kegemaran!`;
+    }
+
+    return res.json({
+      reply: fallbackReply,
+      partnerName,
+      participantName,
+      suggestedActivities: [
+        {
+          id: `act-1-${Date.now()}`,
+          title: `Bicara Hobi & Minat ${partner.name.split(' ')[0]}`,
+          description: `Ketahui lebih mendalam tentang minat ${partner.name.split(' ')[0]} dalam ${Array.isArray(partner.hobbies) ? partner.hobbies[0] : 'aktiviti kegemarannya'}.`,
+          icebreaker: `"${partner.name.split(' ')[0]}, apa perkara paling menyeronokkan yang awak pernah alami sewaktu buat hobi kegemaran awak?"`,
+          vibe: 'Santai & Menarik',
+        },
+        {
+          id: `act-2-${Date.now()}`,
+          title: 'Teka-Teki Pasangan Idaman',
+          description: 'Uji keserasian pandangan masa depan dan impian hidup dengan cara yang santai dan tidak menekan.',
+          icebreaker: `"Kalau kita ada satu hari cuti tanpa kerja langsung, apa aktiviti impian yang awak nak kita buat sama-sama?"`,
+          vibe: 'Mendalam & Bererti',
+        },
+        {
+          id: `act-3-${Date.now()}`,
+          title: 'Aktiviti Santai Bersama',
+          description: `Rancang pertemuan atau aktiviti santai di ${partner.location || participant.location}.`,
+          icebreaker: `"Jom kita cuba kafe baru di sekitar sini pada hujung minggu ini?"`,
+          vibe: 'Spontan & Ceria',
+        },
+      ],
+    });
+  } catch (err: any) {
+    console.error('AI Companion route error:', err);
+    return res.status(500).json({ error: 'Gagal memproses sesi AI Dating. Sila cuba sebentar lagi.' });
+  }
+});
+
 async function main() {
   if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.resolve(__dirname, 'dist')));

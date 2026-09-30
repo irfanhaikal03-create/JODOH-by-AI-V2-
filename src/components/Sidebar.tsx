@@ -14,6 +14,7 @@ interface SidebarProps {
   onOpenSavedSessions?: () => void;
   onOpenResetModal?: () => void;
   savedSessionsCount?: number;
+  onOpenAICompanion?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -29,6 +30,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenSavedSessions,
   onOpenResetModal,
   savedSessionsCount = 0,
+  onOpenAICompanion,
 }) => {
   const isAdmin = userRole === 'admin';
 
@@ -103,6 +105,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <span className="material-symbols-outlined text-xl">favorite</span>
               <span>{isAdmin ? 'AI Pairing Matrix' : 'Keputusan AI'}</span>
             </button>
+
+            {/* REAL-TIME AI DATING WINGMAN / COMPANION */}
+            {onOpenAICompanion && (
+              <button
+                type="button"
+                onClick={() => handleNavClick(onOpenAICompanion)}
+                className="flex items-center justify-between px-space-md py-2.5 rounded-xl bg-gradient-to-r from-pink-50 to-rose-50 hover:from-pink-100 hover:to-rose-100 border border-pink-200/80 text-primary transition-all text-left cursor-pointer shadow-xs my-1 group"
+                title="Buka pembantu peribadi AI Dating semasa sesi dating"
+              >
+                <div className="flex items-center gap-space-sm">
+                  <span className="material-symbols-outlined text-xl text-rose-600 group-hover:scale-110 transition-transform">
+                    smart_toy
+                  </span>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-xs leading-tight">AI Dating Wingman</span>
+                    <span className="text-[10px] text-pink-700/80 leading-tight">Sembang & Recap Pasangan</span>
+                  </div>
+                </div>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              </button>
+            )}
 
             {isAdmin && (
               <>

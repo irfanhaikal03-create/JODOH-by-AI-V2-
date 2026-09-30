@@ -15,6 +15,7 @@ import { MatchingRulesModal } from './components/MatchingRulesModal';
 import { MyProfileModal } from './components/MyProfileModal';
 import { SavedSessionsModal } from './components/SavedSessionsModal';
 import { AdminResetModal } from './components/AdminResetModal';
+import { AIDatingCompanionModal } from './components/AIDatingCompanionModal';
 import { AuthView } from './components/AuthView';
 import { Toast } from './components/Toast';
 import {
@@ -137,6 +138,7 @@ export default function App() {
   const [activeSessionTitle, setActiveSessionTitle] = useState<string | undefined>(undefined);
   const [isSavedSessionsModalOpen, setIsSavedSessionsModalOpen] = useState(false);
   const [isAdminResetModalOpen, setIsAdminResetModalOpen] = useState(false);
+  const [isAICompanionOpen, setIsAICompanionOpen] = useState(false);
 
   const showToast = (msg: string, error = false) => {
     setToastMessage(msg);
@@ -734,6 +736,7 @@ export default function App() {
         onOpenSavedSessions={() => setIsSavedSessionsModalOpen(true)}
         onOpenResetModal={isAdmin ? () => setIsAdminResetModalOpen(true) : undefined}
         savedSessionsCount={savedSessions.length}
+        onOpenAICompanion={() => setIsAICompanionOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -798,6 +801,7 @@ export default function App() {
                 onOpenResetModal={isAdmin ? () => setIsAdminResetModalOpen(true) : undefined}
                 savedSessionsCount={savedSessions.length}
                 activeSessionTitle={activeSessionTitle}
+                onOpenAICompanion={() => setIsAICompanionOpen(true)}
               />
             )}
           </div>
@@ -892,6 +896,36 @@ export default function App() {
         isOpen={isMatchingRulesOpen}
         onClose={() => setIsMatchingRulesOpen(false)}
       />
+
+      {/* Real-Time AI Dating Wingman & Companion Modal */}
+      <AIDatingCompanionModal
+        isOpen={isAICompanionOpen}
+        onClose={() => setIsAICompanionOpen(false)}
+        participants={participants}
+        matches={matches}
+        currentParticipantId={currentParticipantProfile?.id}
+        currentParticipantName={currentParticipantProfile?.name || userProfile?.displayName}
+        isAdmin={isAdmin}
+      />
+
+      {/* Floating Action Button for Real-Time AI Dating Companion */}
+      <div className="fixed bottom-5 right-5 z-40">
+        <button
+          type="button"
+          onClick={() => setIsAICompanionOpen(true)}
+          className="group flex items-center gap-2.5 px-4 py-3 sm:px-5 sm:py-3.5 rounded-full bg-gradient-to-r from-primary via-secondary to-pink-600 hover:opacity-95 text-white font-bold text-xs sm:text-sm shadow-xl shadow-pink-900/25 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer border border-white/25 backdrop-blur-md"
+          title="Buka AI Dating Wingman Masa Nyata"
+        >
+          <div className="relative flex items-center justify-center">
+            <span className="material-symbols-outlined text-lg sm:text-xl text-pink-200 group-hover:rotate-12 transition-transform">
+              smart_toy
+            </span>
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-primary animate-ping"></span>
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-primary"></span>
+          </div>
+          <span className="tracking-wide">AI Dating Wingman</span>
+        </button>
+      </div>
     </div>
   );
 }

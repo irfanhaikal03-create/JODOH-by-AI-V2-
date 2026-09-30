@@ -34,6 +34,7 @@ interface TopMatchesViewProps {
   onOpenResetModal?: () => void;
   savedSessionsCount?: number;
   activeSessionTitle?: string;
+  onOpenAICompanion?: () => void;
 }
 
 export const TopMatchesView: React.FC<TopMatchesViewProps> = ({
@@ -54,6 +55,7 @@ export const TopMatchesView: React.FC<TopMatchesViewProps> = ({
   onOpenResetModal,
   savedSessionsCount = 0,
   activeSessionTitle,
+  onOpenAICompanion,
 }) => {
   const isAdmin = userRole === 'admin';
   const [expandedCards, setExpandedCards] = useState<Record<number, boolean>>({});
@@ -657,6 +659,46 @@ export const TopMatchesView: React.FC<TopMatchesViewProps> = ({
             )}
           </div>
         )}
+
+        {/* ATTENDEE EXCLUSIVE PAIRED PARTNER BANNER & AI COMPANION SHORTCUT */}
+        {myMatch && (
+          <div className="mt-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-pink-50 via-rose-50 to-amber-50 border-2 border-pink-300/80 shadow-md flex flex-wrap items-center justify-between gap-4 animate-in fade-in duration-300">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary to-secondary text-white flex items-center justify-center shadow-md shrink-0">
+                <span className="material-symbols-outlined text-2xl text-pink-200">favorite</span>
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full bg-pink-200/80 text-primary text-[10px] font-extrabold uppercase tracking-wider">
+                    Pasangan Padanan Rasmi Anda
+                  </span>
+                  <span className="text-xs font-bold text-secondary">
+                    Kedudukan #{myMatch.rank} • {myMatch.score}% Serasi
+                  </span>
+                </div>
+                <h3 className="font-serif font-bold text-lg sm:text-xl text-primary mt-0.5">
+                  {myMatch.maleName.toLowerCase().includes((currentUserName || '').toLowerCase())
+                    ? myMatch.femaleName
+                    : myMatch.maleName}
+                </h3>
+                <p className="text-xs text-on-surface-variant font-medium">
+                  {myMatch.whyTheyMatch.slice(0, 110)}...
+                </p>
+              </div>
+            </div>
+
+            {onOpenAICompanion && (
+              <button
+                type="button"
+                onClick={onOpenAICompanion}
+                className="px-5 py-3 rounded-2xl bg-gradient-to-r from-primary to-secondary hover:opacity-95 text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-md hover:scale-102"
+              >
+                <span className="material-symbols-outlined text-lg">smart_toy</span>
+                <span>Buka AI Dating Wingman</span>
+              </button>
+            )}
+          </div>
+        )}
       </section>
 
       {/* Metric Quick Ribbon */}
@@ -978,6 +1020,20 @@ export const TopMatchesView: React.FC<TopMatchesViewProps> = ({
                 </ul>
               </div>
             </div>
+
+            {/* AI Dating Wingman Shortcut for Match #1 */}
+            {onOpenAICompanion && (
+              <div className="mt-4 pt-3 border-t border-outline-variant/20 flex justify-end">
+                <button
+                  type="button"
+                  onClick={onOpenAICompanion}
+                  className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-pink-50 to-rose-50 hover:from-pink-100 hover:to-rose-100 text-primary border border-pink-300/70 font-bold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-xs"
+                >
+                  <span className="material-symbols-outlined text-base text-rose-600">smart_toy</span>
+                  <span>Sembang AI Dating Wingman (Masa Nyata)</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -1125,6 +1181,20 @@ export const TopMatchesView: React.FC<TopMatchesViewProps> = ({
                         </ul>
                       </div>
                     </div>
+
+                    {/* AI Wingman Launch Button */}
+                    {onOpenAICompanion && (
+                      <div className="mt-3 pt-2.5 border-t border-outline-variant/20 flex justify-end">
+                        <button
+                          type="button"
+                          onClick={onOpenAICompanion}
+                          className="px-3.5 py-1.5 rounded-lg bg-pink-50 hover:bg-pink-100 text-primary border border-pink-200 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
+                        >
+                          <span className="material-symbols-outlined text-base text-rose-600">smart_toy</span>
+                          <span>Buka AI Dating Wingman</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

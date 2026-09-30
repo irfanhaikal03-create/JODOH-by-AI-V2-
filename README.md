@@ -36,7 +36,14 @@ Aplikasi ini memudahkan penganjur mengurus profil peserta (lelaki & wanita) dan 
   - **Potensi Cabaran**: Perkara yang perlu diberi perhatian atau toleransi.
   - **Cadangan Aktiviti Temu Janji**: Idea *ice-breaking* dan tarikh pertama yang disesuaikan mengikut hobi bersama.
 
-### 3. 📁 Arkib Sesi & Kawalan Terbitan (Draf vs Terbit)
+### 3. 💬 AI Dating Wingman (Masa Nyata Khas Peserta)
+- **Akses AI Semasa Dating**: Peserta boleh berinteraksi dengan AI Wingman secara masa nyata sewaktu menjalankan aktiviti temu janji.
+- **Kawalan Ketat (Strict Partner-Only Lock)**: AI hanya membenarkan bimbingan dan pertanyaan mengenai **pasangan rasmi yang telah dipadankan sahaja**. Pertanyaan mengenai orang lain akan ditolak secara beradab.
+- **Soalan & Icebreaker Spontan**: AI mencadangkan soalan menceriakan suasana berdasarkan hobi dan profil pasangan.
+- **Recap Perjalanan Dating**: Peserta boleh mencatat nota dan meminta AI merumuskan sentimen, *green flags*, dan cadangan untuk *date* seterusnya.
+- **Kad Aktiviti Interaktif (Swipe & React)**: Boleh leret (*swipe*), simpan, atau tanda selesai aktiviti dating bersama pasangan.
+
+### 4. 📁 Arkib Sesi & Kawalan Terbitan (Draf vs Terbit)
 - **Simpan Sesi Padanan**: Simpan pelbagai sesi larian pemadanan dalam arkib aplikasi.
 - **Status Draf & Terbit**: Admin boleh menyemak keputusan terlebih dahulu secara tertutup (Draf) sebelum menerbitkannya kepada peserta.
 - **Kawalan Admin Penuh**: Hanya pentadbir yang disahkan boleh menjana, memadam, atau menetapkan semula data sistem.
